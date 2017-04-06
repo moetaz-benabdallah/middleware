@@ -47,8 +47,8 @@ public class PeopleServiceImpl implements PeopleService {
 
     @Override
     public void destroy(Long id) {
-    	personService.destroy("Basic QWRtaW4xOnByb2pldGFzIzEyMw==", id);
         peopleRepository.delete(id);
+	personService.destroy("Basic QWRtaW4xOnByb2pldGFzIzEyMw==", id);
     }
 
 	@Override
