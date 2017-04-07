@@ -13,26 +13,26 @@ import com.efacil.domain.Person;
 import com.efacil.service.PersonService;
 
 @Controller
-@RequestMapping(value = "/crm")
+@RequestMapping(value = "/crm/people")
 @ResponseBody
 public class PersonCrmEndpointController {
 
 	@Autowired
 	PersonService personService;
 	
-	@RequestMapping(value = "/people", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	@RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	Person create(@RequestHeader(value = "Authorization", required=true) String credentials ,
 			@RequestBody Person person){
 		return personService.create(credentials, person);
 	}
 	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.PUT, consumes = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
 	void update(@RequestHeader(value = "Authorization", required=true) String credentials ,
 			@RequestBody Person person, @PathVariable("id") Long id) {
 		personService.update(credentials, person, id);
 	}
 	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	Person getOneById(@RequestHeader(value = "Authorization", required=true) String credentials, @PathVariable("id") Long id){
 		return personService.read(credentials, id);
 		

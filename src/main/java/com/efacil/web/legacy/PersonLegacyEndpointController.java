@@ -14,39 +14,39 @@ import com.efacil.domain.Person;
 import com.efacil.service.PeopleService;
 
 @Controller
-@RequestMapping(value = "/legacy")
+@RequestMapping(value = "/legacy/people")
 @ResponseBody
 public class PersonLegacyEndpointController {
 	
 	@Autowired
 	PeopleService peopleService;
 	
-	@RequestMapping(value = "/people", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	Person create(@RequestBody Person person) {
 		return peopleService.create(person);
 	}
 	
-	@RequestMapping(value = "/people", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	List<Person> getAll() {
 		return peopleService.getAll();
 	}
 	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
 	Person getOneById(@PathVariable("id") Long id) {
 		return peopleService.getOne(id);
 	}
 	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	void delete(@PathVariable("id") Long id) {
 		peopleService.destroy(id);
 	}
 	
-	@RequestMapping(value = "/people/{id}", method = RequestMethod.PUT, consumes = "application/json")
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
 	void update(@RequestBody Person person, @PathVariable("id") Long id) {
 		peopleService.update(person, id);
 	}
 	
-	@RequestMapping(value = "/people", method = RequestMethod.DELETE)
+	@RequestMapping(method = RequestMethod.DELETE)
 	void deleteAll() {
 		peopleService.destroyAll();
 	}
