@@ -9,6 +9,8 @@ import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Builder
 @ToString
@@ -20,6 +22,7 @@ public class Person implements Serializable {
 
 	private Long id;
 
+	@NotNull
     private String name;
 
     private String birthDate;
