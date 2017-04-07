@@ -52,8 +52,9 @@ public class PersonServiceImpl implements PersonService {
 
 	@Override
 	public Person create(String credentials, Person person) {
-		peopleService.create(person);
-		return api.create(credentials, person);
+		Person p = api.create(credentials, person);
+		peopleService.create(p);
+		return p;
 	}
 
 	@Override
