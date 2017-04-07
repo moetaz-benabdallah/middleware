@@ -1,5 +1,7 @@
 package com.efacil.web.crm;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,7 @@ public class PersonCrmEndpointController {
 	
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	Person create(@RequestHeader(value = "Authorization", required=true) String credentials ,
-			@RequestBody Person person){
+			@RequestBody @Valid Person person){
 		return personService.create(credentials, person);
 	}
 	
