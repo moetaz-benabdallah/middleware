@@ -1,23 +1,10 @@
 package com.efacil.repository;
 
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
 import com.efacil.domain.Person;
 
-import java.util.List;
-
-public interface PeopleRepository {
-
-	void checkExistingFile();
-	
-    List<Person> findAll();
-
-    Person getOne(Long id);
-
-    Person save(Person entity);
-
-    void delete(Long id);
-    
-    void update(Person entity, Long id);
-    
-    void deleteAll();
-    
+@Repository
+public interface PeopleRepository extends PagingAndSortingRepository<Person, Long> {
 }

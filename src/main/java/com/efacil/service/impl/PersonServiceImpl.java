@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 import com.efacil.domain.Person;
 import com.efacil.service.PeopleService;
 import com.efacil.service.PersonService;
+import com.efacil.service.converter.PersonConverter;
+import com.efacil.service.converter.PersonRequestConverter;
+import com.efacil.service.data.PersonData;
 import com.efacil.service.request.PersonApi;
+import com.efacil.web.data.PersonRequest;
 
 import feign.Feign;
 import feign.gson.GsonDecoder;
@@ -25,8 +29,8 @@ import feign.gson.GsonEncoder;
 public class PersonServiceImpl implements PersonService {
 
 	@Autowired
-	PeopleService peopleService;
-	PersonApi api;
+	private PeopleService peopleService;
+	private PersonApi api;
 	
 	public PersonServiceImpl() {
 		api = Feign.builder().encoder(new GsonEncoder()).decoder(new GsonDecoder()).target(PersonApi.class,
@@ -41,7 +45,7 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public Person read(String credentials, Long id) {
+	public PersonData read(String credentials, Long id) {
 		return api.getOne(credentials, id);
 	}
 
@@ -51,14 +55,16 @@ public class PersonServiceImpl implements PersonService {
 	}
 
 	@Override
-	public Person create(String credentials, Person person) {
-		Person p = api.create(credentials, person);
+	public PersonData create(String credentials, PersonRequest person) {
+		
+		PersonRequest p = api.create(credentials, person);
 		peopleService.create(p);
-		return p;
+		return new PersonConverter().convert(new PersonRequestConverter().convert(p));
+
 	}
 
 	@Override
-	public void update(String credentials, Person person, Long id) {
+	public void update(String credentials, PersonRequest person, Long id) {
 		peopleService.update(person, id);
 		api.update(credentials, person, id);
 	}

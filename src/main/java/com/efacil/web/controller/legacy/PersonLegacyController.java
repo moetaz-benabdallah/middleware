@@ -1,4 +1,4 @@
-package com.efacil.web.legacy;
+package com.efacil.web.controller.legacy;
 
 import java.util.List;
 
@@ -12,29 +12,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.efacil.domain.Person;
 import com.efacil.service.PeopleService;
+import com.efacil.service.data.PersonData;
+import com.efacil.web.data.PersonRequest;
 
 @Controller
 @RequestMapping(value = "/legacy/people")
-@ResponseBody
-public class PersonLegacyEndpointController {
+public class PersonLegacyController {
 	
 	@Autowired
-	PeopleService peopleService;
+	private PeopleService peopleService;
 	
 	@RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-	Person create(@RequestBody @Valid Person person) {
+	@ResponseBody
+	PersonData create(@RequestBody @Valid PersonRequest person) {
 		return peopleService.create(person);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	List<Person> getAll() {
+	@ResponseBody
+	List<PersonData> getAll() {
 		return peopleService.getAll();
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-	Person getOneById(@PathVariable("id") Long id) {
+	@ResponseBody
+	PersonData getOneById(@PathVariable("id") Long id) {
 		return peopleService.getOne(id);
 	}
 	
@@ -44,8 +47,8 @@ public class PersonLegacyEndpointController {
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
-	void update(@RequestBody Person person, @PathVariable("id") Long id) {
-		peopleService.update(person, id);
+	void update(@RequestBody PersonRequest person, @PathVariable("id") Long id) {
+		peopleService.update(person, id);;
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)

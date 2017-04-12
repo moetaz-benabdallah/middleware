@@ -2,19 +2,20 @@ package com.efacil.service;
 
 import java.util.List;
 
-import com.efacil.domain.Person;
+import com.efacil.service.data.PersonData;
+import com.efacil.web.data.PersonRequest;
 
 public interface PeopleService {
 
-    List<Person> getAll();
+    List<PersonData> getAll();
 
-    Person getOne(Long id);
+    PersonData getOne(Long id);
 
     void destroy(Long id);
 
-    Person create(Person person);
+    PersonData create(PersonRequest person);
 
-    void update(Person person, Long id);
+    void update(PersonRequest person, Long id);
 
     void destroyAll();
 

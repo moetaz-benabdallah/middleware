@@ -11,59 +11,77 @@
 package com.efacil.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.efacil.domain.Person;
 import com.efacil.repository.PeopleRepository;
 import com.efacil.service.PeopleService;
+import com.efacil.service.PersonService;
+import com.efacil.service.converter.PersonConverter;
+import com.efacil.service.converter.PersonDataConverter;
+import com.efacil.service.converter.PersonRequestConverter;
+import com.efacil.service.data.PersonData;
+import com.efacil.web.data.PersonRequest;
 
-/**
- * PersonService Class, create CRUD endpoints.
- * Allows the synchronization with Righnow CRM
- *
- * @author Moatez Ben Abdallah
- * @version 1.0 04 Mar 2017
- **/
 @Service
+@Transactional(readOnly = true)
 public class PeopleServiceImpl implements PeopleService {
 
 	@Autowired
-	PeopleRepository peopleRepository; 
-	
+	private PeopleRepository peopleRepository;
+
 	@Autowired
-	PersonServiceImpl personService;
-	
-    @Override
-    public List<Person> getAll() {
-        return peopleRepository.findAll();
-    }
-
-    @Override
-    public Person getOne(Long id) {
-        return peopleRepository.getOne(id);
-    }
-
-    @Override
-    public void destroy(Long id) {
-        peopleRepository.delete(id);
-	personService.destroy("Basic QWRtaW4xOnByb2pldGFzIzEyMw==", id);
-    }
+	private PersonService personService;
 
 	@Override
-    public Person create(Person person) {
-    	return peopleRepository.save(person);
-    }
+	public List<PersonData> getAll() {
+		return StreamSupport.stream(peopleRepository.findAll().spliterator(), false)
+				.map(person -> new PersonConverter().convert(person)).collect(Collectors.toList());
+	}
 
-    @Override
-    public void update(Person person, Long id) {
-        peopleRepository.update(person, id);
-    }
+	@Override
+	public PersonData getOne(Long id) {
+		Person person = peopleRepository.findOne(id);
+		if (person == null) {
+			throw new EntityNotFoundException();
+		}
+		return new PersonConverter().convert(person);
+	}
 
-    @Override
-    public void destroyAll() {
-        peopleRepository.deleteAll();
-    }
+	@Override
+	@Transactional
+	public void destroy(Long id) {
+		peopleRepository.delete(id);
+		personService.destroy("Basic QWRtaW4xOnByb2pldGFzIzEyMw==", id);
+	}
+
+	@Override
+	@Transactional
+	public PersonData create(PersonRequest request) {
+		// TODO personrequest to person
+		return new PersonConverter().convert(peopleRepository.save(new PersonRequestConverter().convert(request)));
+	}
+
+	@Override
+	@Transactional
+	public void update(PersonRequest request, Long id) {
+		// TODO personrequest to person
+		Person person = new PersonDataConverter().convert(getOne(id));
+		person.update(request.getName(), request.getBirthDate(), request.getActivated());
+		peopleRepository.save(person);
+	}
+
+	@Override
+	@Transactional
+	public void destroyAll() {
+		peopleRepository.deleteAll();
+	}
 
 }
