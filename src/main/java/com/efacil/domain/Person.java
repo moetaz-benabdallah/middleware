@@ -32,13 +32,13 @@ public class Person implements Serializable {
 	private String name;
 
 	@Column(name = "birth_date")
-	private String birthDate;
+	private Date birthDate;
 
 	@Column(name = "created_time")
-	private String createdTime;
+	private Date createdTime;
 
 	@Column(name = "updated_time")
-	private String updatedTime;
+	private Date updatedTime;
 
 	private Boolean activated;
 
@@ -46,11 +46,11 @@ public class Person implements Serializable {
 	public Person() {
 	}
 
-	public Person update(String name, String birthDate, Boolean activated) {
+	public Person update(String name, Date birthDate, Boolean activated) {
 		this.name = name;
 		this.birthDate = birthDate;
 		this.activated = activated;
-		this.updatedTime = new Date().toLocaleString();
+		this.updatedTime = new Date();
 		return this;
 	}
 }

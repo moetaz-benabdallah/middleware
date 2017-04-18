@@ -1,58 +1,89 @@
 package com.efacil.middleware.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.efacil.domain.Person;
 import com.efacil.service.PeopleService;
-import com.efacil.service.converter.PersonConverter;
 import com.efacil.service.data.PersonData;
 import com.efacil.web.data.PersonRequest;
 
+
 @RunWith(SpringRunner.class)
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@SpringBootTest
 public class PeopleServiceTest {
 
-	@Autowired
+	@MockBean
 	private PeopleService peopleService;
 	
 	@Test
-	public void testInit(){
-		System.out.println("PeopleServiceTest init");
+	public void shouldCreate(){
+		PersonRequest personR = Mockito.mock(PersonRequest.class);
+		when(personR.getName()).thenReturn("xxx");
+		
+		PersonData personD = Mockito.mock(PersonData.class);
+		when(personD.getName()).thenReturn("xxx");
+
+		given(this.peopleService.create(personR)).willReturn(personD);
+		assertThat(personR.getName()).isEqualTo(personD.getName());
+
 	}
 
+	@Test
+	public void shouldGetAll() {
 
-//	@Test
-//	public void testGetAll() {
+		PersonData obj = PersonData.builder().id(1L).name("xxx").build();
+		
+		List<PersonData> people = new ArrayList<PersonData>();
+		people.add(obj);
+		
+		given(this.peopleService.getAll()).willReturn(people);
 //
-//		List<PersonData> people = peopleService.getAll();
-//
-//		assertEquals(2, people.size());
-//	}
+//		when(peopleService.getAll()).thenReturn(Arrays.asList(obj));
+//		
+//		List<PersonData> actual = peopleService.getAll();
+//		assertThat(actual).hasSize(1);      
+	}
 	
-//	@Test
-//	public void testGetOne() {
-//
-//		PersonData person = peopleService.getOne(56L);
-//		assertEquals("aymen", person.getName());
-//	}
+	@Test
+	public void shouldDeleteOne(){
+		
+		PersonData obj = PersonData.builder().id(1L).name("xxx").build();
+
+		when(peopleService.getOne(1L)).thenReturn(obj);
+		peopleService.destroy(1L);
+		verify(peopleService, times(1)).destroy(1L);
+	}
 	
-//	@Test
-//	public void testDeleteOne(){
-//		int peopleSize = peopleService.getAll().size();
-//		peopleService.destroy(391L);
-//		int peopleAfterDelete = peopleService.getAll().size();
-//		assertEquals(peopleAfterDelete, peopleSize - 1);
-//	}
+	@Test
+	public void shouldUpdate() {
+		PersonData existing = PersonData.builder().id(1L).name("xxx").build();
+		
+		PersonRequest personR = Mockito.mock(PersonRequest.class);
+		when(personR.getName()).thenReturn("xxx");
+		
+		when(peopleService.getOne(1L)).thenReturn(existing);
+		when(peopleService.create(personR)).thenReturn(existing);
+		
+		PersonRequest personR2 = Mockito.mock(PersonRequest.class);
+		when(personR2.getName()).thenReturn("yyy");
+		
+		peopleService.update(personR2, 1L);
+		verify(peopleService, times(1)).create(personR);
+		
+		assertThat(existing.getName()).isEqualTo("xxx");
+	}
 
 }

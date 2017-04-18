@@ -1,5 +1,10 @@
 package com.efacil.service.data;
 
+import java.util.Date;
+
+import com.efacil.serialize.JsonDateSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Tolerate;
@@ -12,11 +17,12 @@ public class PersonData {
 
 	private String name;
 
-	private String birthDate;
+	@JsonSerialize(using=JsonDateSerializer.class)
+	private Date birthDate;
 
-	private String createdTime;
+	private Date createdTime;
 
-	private String updatedTime;
+	private Date updatedTime;
 
 	private Boolean activated;
 

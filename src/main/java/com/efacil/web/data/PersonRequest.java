@@ -1,5 +1,7 @@
 package com.efacil.web.data;
 
+import java.util.Date;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -13,7 +15,7 @@ public class PersonRequest {
 	private String name;
 
 	@NotNull
-	private String birthDate;
+	private Date birthDate;
 
 	@NotNull
 	private Boolean activated;
